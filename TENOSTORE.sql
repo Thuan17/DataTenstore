@@ -6,19 +6,27 @@ USE TENOSTORE
 create table ProductCategory(
 	ProductCategoryId int IDENTITY(1,1) NOT NULL primary key ,
 	Title nvarchar(150) NOT NULL,
-	Description nvarchar(max) NULL,
 	Icon  varchar(max)NUll,
 	CreatedBy nvarchar(max) NULL,
 	CreatedDate datetime NOT NULL,
 	ModifiedDate datetime  NULL,
 	Modifiedby nvarchar(max) NULL,
 	Alias nvarchar(150) NOT NULL,
-	IsActive bit NOT NULL DEFAULT 0,
+	IsActive bit  NULL DEFAULT 0,
 )
 go
 
 
-
+create table Pin (
+	PinId int identity(1,1) primary key,
+		Content nchar(25),
+	)
+	go
+	create table Chip (
+	ChipId int identity(1,1) primary key,
+		Content nvarchar(255),
+	)
+	go
 create table Product(
 	ProductsId int IDENTITY(1,1) not null primary key ,
 	Title nvarchar(max),
@@ -27,23 +35,31 @@ create table Product(
 	ModifiedDate datetime ,
 	Modifeby nvarchar(max),
 	Alias nvarchar(max)Null,
-	IsActive bit NOT NULL DEFAULT 0,
-	IsHome bit NOT NULL DEFAULT 0,
-	IsSale bit NOT NULL DEFAULT 0,
-	IsFeature bit NOT NULL DEFAULT 0,
-	IsHot bit NOT NULL DEFAULT 0,
-	ProductCode nvarchar(50),
+	Pin nchar(25)NOT NULL, 
+	Chip nvarchar(255)NOT NULL,
+	Description nvarchar(max) NULL,
+	Quantity int NOT NULL,
+	IsActive bit  NULL DEFAULT 0,
+	IsHome bit  NULL DEFAULT 0,
+	IsSale bit  NULL DEFAULT 0,
+	IsHot bit  NULL DEFAULT 0,
+	IsGift BIT NULL DEFAULT 0, 
+    CanBeSoldSeparately BIT NULL DEFAULT 0,
 	ProductCategoryId int,
+	Price decimal(18,2),
+	PriceSale decimal(18,2) NUll,
+	OriginalPrice decimal(18,2) Not NUll
 	foreign key  (ProductCategoryId) REFERENCES ProductCategory (ProductCategoryId)
 )
 go
 
 
 
-Create table ProductDetailImage(
+
+Create table ProductImage(
 	ProductImageId int IDENTITY(1,1) NOT NULL  primary key ,
 	ProductsId int NOT NULL,
-	Image varchar(max)NUll,
+	Image nvarchar(max)NUll,
 	IsDefault bit NOT NULL,
 	foreign key  (ProductsId) REFERENCES Product (ProductsId)
 )
@@ -72,7 +88,7 @@ create  TABLE Employee(
 	CreatedBy nvarchar(max) NULL,
 	CreatedDate datetime NOT NULL,
 	ModifiedBy nvarchar(max) NULL,
-	ModifiedDate datetime NOT NULL,
+	ModifiedDate datetime  NULL,
 	Image varbinary(max)NUll,
 	RoleEmployeeId int--IDCHu chuc ngang
 	foreign key  (RoleEmployeeId) REFERENCES RoleEmployee (RoleEmployeeId)
@@ -84,7 +100,7 @@ create table AccountEmployee(
 	EmployeeId int  NOT NULL  primary key ,--NhanVienId
    Password  varchar(100) not null,	
    	Code varchar(10) Not null,--MSNV
-	Lock bit NOT NULL DEFAULT 0,
+	Lock bit  NULL DEFAULT 0,
 	foreign key  (EmployeeId) REFERENCES Employee (EmployeeId)
 )
 go
@@ -116,7 +132,7 @@ create table AccountCustomer(
 CustomerId  int primary key ,--CustomerId
  PhoneNumber VARCHAR(15)null ,
  Password  varchar(100) ,
-Lock bit NOT NULL DEFAULT 0,
+Lock bit  NULL DEFAULT 0,
 Code char(10),
 foreign key  (CustomerId) REFERENCES Customer (CustomerId)
 )
@@ -145,12 +161,12 @@ create table Orders(
 	ModifiedDate datetime NOT NULL,
 	Modifiedby nvarchar(max) NULL,
 	TypePayment int NOT NULL,
-	typeOrder bit NOT NULL DEFAULT 0,--dơn hàng huỷ 
+	typeOrder bit  NULL DEFAULT 0,--dơn hàng huỷ 
 	OrdernotesCancel nvarchar (250),
 	Confirm bit NOT NULL DEFAULT 0,
 	Note nvarchar(max),--Khách hàng dghi chú 
 	typeReturn bit NOT NULL DEFAULT 0,--neu true là đơn hàng trả 
-	Success bit NOT NULL DEFAULT 0,--trang thái đơn hàng (true khách đã nhận đưuọc hàng)
+	Success bit  NULL DEFAULT 0,--trang thái đơn hàng (true khách đã nhận đưuọc hàng)
 	SuccessDate datetime,--Nếu Success ==true thì sẽ đây là ngày nhận hàng
 	CustomerId int not null ,
 	CustomerAddressId int  not null,
@@ -184,17 +200,19 @@ create table Bill(
 	TotalAmount [decimal](18, 2) NOT NULL,
 	CreatedBy nvarchar(max) NULL,
 	CreatedDate datetime NOT NULL,
-	ModifiedDate datetime NOT NULL,
+	ModifiedDate datetime  NULL,
 	Modifiedby nvarchar(max) NULL,
-	TypePayment int NOT NULL,
-	TypeOrder bit NOT NULL DEFAULT 0,--Hoá đơn trả
+	TypePayment int  NULL,
+	TypeOrder bit  NULL DEFAULT 0,--Hoá đơn trả
 	Note nvarchar(max),--Khách hàng dghi chú 
 	PhoneCustomer nchar(15),
 	NameCustomer nvarchar(250),
 	EmployeeId int ,
-		foreign key  (EmployeeId) REFERENCES Employee (EmployeeId)
+	foreign key  (EmployeeId) REFERENCES Employee (EmployeeId)
 )
 go
+
+
 create table BillDetail (
 	BillDetailId int IDENTITY(1,1) NOT NULL primary key ,
 	Quantity int NOT NULL,
@@ -230,7 +248,7 @@ create table News(
 	Title nvarchar(350)  NULL,
 	Createdate date ,
 	EmployeeId int,
-	IsActive bit NOT NULL DEFAULT 0,
+	IsActive bit  NULL DEFAULT 0,
 	Image varbinary(max),
 	foreign key  (EmployeeId) REFERENCES Employee (EmployeeId)
 )
@@ -241,7 +259,7 @@ create table NewDetail(
 	Createdate date ,
 	Content nvarchar(max),
 	LinkIg char(900),
-	IsActive bit NOT NULL DEFAULT 0,
+	IsActive bit  NULL DEFAULT 0,
 
 	NewsId int,
 		foreign key  (NewsId) REFERENCES News (NewsId)
@@ -265,7 +283,7 @@ create table Banner(
 	Title nvarchar(350)  NULL,
 	Createdate date ,
 	EmployeeId int,
-	IsActive bit NOT NULL DEFAULT 0,
+	IsActive bit  NULL DEFAULT 0,
 	Image varbinary(max)
 )
 go
@@ -292,6 +310,8 @@ go
 		foreign key (idDistricts) references Districts(idDistricts)
 	);
 	go
+
+	
 
 
 CREATE TRIGGER CreateCartOnInsertKhachHang
