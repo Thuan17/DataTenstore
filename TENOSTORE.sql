@@ -13,6 +13,7 @@ create table ProductCategory(
 	Modifiedby nvarchar(max) NULL,
 	Alias nvarchar(150) NOT NULL,
 	IsActive bit  NULL DEFAULT 0,
+	IsGift BIT NULL DEFAULT 0, 
 )
 go
 
@@ -35,8 +36,8 @@ create table Product(
 	ModifiedDate datetime ,
 	Modifeby nvarchar(max),
 	Alias nvarchar(max)Null,
-	Pin nchar(25)NOT NULL, 
-	Chip nvarchar(255)NOT NULL,
+	Pin nchar(25) NULL ,
+	Chip nvarchar(255) NULL,
 	Description nvarchar(max) NULL,
 	Quantity int NOT NULL,
 	IsActive bit  NULL DEFAULT 0,
@@ -52,7 +53,6 @@ create table Product(
 	foreign key  (ProductCategoryId) REFERENCES ProductCategory (ProductCategoryId)
 )
 go
-
 
 
 
